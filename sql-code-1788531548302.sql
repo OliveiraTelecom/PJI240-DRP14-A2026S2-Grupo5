@@ -1,9 +1,11 @@
+1. Preparação do Banco de Dados
+SQL
 -- Habilita a extensão para geração automática de UUIDs
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+Explicação: Este comando garante que o PostgreSQL consiga gerar identificadores únicos universais (UUIDs) nativamente. O uso de UUID previne conflitos de ID em sistemas distribuídos e aumenta a segurança por não expor a contagem de registros (como faz um ID sequencial).
 
--- ==========================================
--- 1. Criação da Tabela: motorista
--- ==========================================
+2. Cadastro de Motoristas
+SQL
 CREATE TABLE motorista (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nome_completo VARCHAR(150) NOT NULL,
@@ -12,10 +14,10 @@ CREATE TABLE motorista (
     possui_ear BOOLEAN DEFAULT FALSE,
     status VARCHAR(20) NOT NULL CHECK (status IN ('disponivel', 'em_viagem', 'ferias', 'inativo'))
 );
+Explicação: Cria a entidade que opera as entregas. A regra UNIQUE na CNH impede motoristas duplicados, e a cláusula CHECK blinda a coluna de status, aceitando apenas estados predefinidos.
 
--- ==========================================
--- 2. Criação da Tabela: veiculo
--- ==========================================
+3. Cadastro de Veículos (Frota)
+SQL
 CREATE TABLE veiculo (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     placa VARCHAR(10) UNIQUE NOT NULL,
@@ -25,10 +27,10 @@ CREATE TABLE veiculo (
     capacidade_kg DECIMAL(10,2) NOT NULL CHECK (capacidade_kg >= 0),
     status VARCHAR(20) NOT NULL CHECK (status IN ('operacional', 'manutencao', 'baixado'))
 );
+Explicação: Controla os recursos físicos. As constraints CHECK garantem integridade dos dados (não permitindo anos de fabricação impossíveis ou capacidades de carga negativas).
 
--- ==========================================
--- 3. Criação da Tabela: cliente
--- ==========================================
+4. Cadastro de Clientes
+SQL
 CREATE TABLE cliente (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nome_razao VARCHAR(150) NOT NULL,
@@ -36,10 +38,10 @@ CREATE TABLE cliente (
     telefone VARCHAR(20),
     endereco_base VARCHAR(255)
 );
+Explicação: Armazena as empresas ou pessoas que solicitam o frete. O documento (CPF/CNPJ) é marcado como único para evitar duplicação de cadastros no sistema de faturamento.
 
--- ==========================================
--- 4. Criação da Tabela: entrega (Relacionamentos)
--- ==========================================
+5. Tabela Transacional: Entregas (Relacionamentos)
+SQL
 CREATE TABLE entrega (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     motorista_id UUID NOT NULL,
@@ -58,19 +60,17 @@ CREATE TABLE entrega (
     CONSTRAINT fk_veiculo FOREIGN KEY (veiculo_id) REFERENCES veiculo(id) ON DELETE RESTRICT,
     CONSTRAINT fk_cliente FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE RESTRICT
 );
+Explicação: É o coração operacional do sistema. Une quem dirige, o que dirige e para quem é a entrega. A regra ON DELETE RESTRICT nas chaves estrangeiras é um mecanismo de segurança vital: impede que um motorista, veículo ou cliente seja apagado do banco de dados se houver alguma entrega vinculada a ele.
 
--- ==========================================
--- 5. Índices de Performance (Opcional, mas recomendado)
--- ==========================================
--- Aceleram buscas por status e relatórios de data
+6. Otimização (Índices)
+SQL
 CREATE INDEX idx_entrega_status ON entrega(status);
 CREATE INDEX idx_entrega_data_saida ON entrega(data_saida);
 CREATE INDEX idx_veiculo_status ON veiculo(status);
+Explicação: Cria "guias de busca rápida" no banco. Como relatórios frequentemente filtram entregas pela data ou status (ex: "buscar todas as entregas em_transito hoje"), os índices impedem que o banco precise ler a tabela inteira linha por linha.
 
--- ==========================================
--- 6. Inserção de Dados para Teste (DML)
--- ==========================================
-
+7. População de Dados (Carga Inicial)
+SQL
 -- Inserindo um motorista
 INSERT INTO motorista (id, nome_completo, cnh_numero, categoria_cnh, possui_ear, status)
 VALUES (
