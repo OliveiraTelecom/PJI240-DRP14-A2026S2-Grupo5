@@ -7,33 +7,58 @@
 ---
 
 ## 👨‍🎓 Integrantes do Grupo
-* **João Vitor da Silva Oliveira** — RA: 24207633
+- **João Vitor da Silva Oliveira** — RA: 24207633
 
 ---
 
 ## 📖 Descrição do Projeto
-Este projeto apresenta a modelagem e a implementação de um banco de dados relacional para otimização e controle de processos logísticos de transporte. A solução centralizada em **PostgreSQL** visa garantir a integridade relacional de dados de motoristas, frotas de veículos, clientes e ordens de entrega em tempo real, substituindo controles manuais por um modelo seguro e escalável.
+Este projeto apresenta a modelagem e a implementação de um banco de dados relacional para a otimização e o controle de processos logísticos de transporte. A solução centralizada em **PostgreSQL** visa substituir planilhas e controles manuais por um modelo estruturado, seguro e escalável, garantindo a integridade relacional entre motoristas, frotas, clientes e ordens de entrega em tempo real.
+
+---
+
+## 📊 Origem e Coleta das Informações
+
+Para garantir a aderência do banco de dados às demandas reais do setor logístico, a levantamento de requisitos e a consolidação das informações basearam-se nas seguintes fontes:
+
+1. **Contextualização e Problema de Pesquisa:**
+   - Observação das dificuldades operacionais enfrentadas por pequenas e médias empresas de transporte no rastreamento de entregas, alocação de frota e gestão do status de fretes.
+
+2. **Mapeamento de Processos e Entrevistas (Pesquisa Qualitativa):**
+   - Mapeamento das rotinas logísticas essenciais (fluxo desde a contratação do cliente até a confirmação da entrega), obtido por meio de entrevistas com profissionais da área de logística e transporte de carga.
+
+3. **Normas e Legislações Setoriais:**
+   - Levantamento dos atributos obrigatórios para cadastro de condutores e frotas de acordo com as exigências do **Contran/Senatran** (ex.: Categoria da CNH, EAR - Exercício de Atividade Remunerada, capacidade de carga em kg).
+
+4. **Dados para Testes e Simulação:**
+   - Os dados utilizados nos scripts DML para povoamento inicial e validação de consultas são dados sintéticos (fictícios) e/ou públicos (como validação de formatos de CEP), gerados exclusivamente para fins acadêmicos e demonstrativos, respeitando as diretrizes da LGPD.
 
 ---
 
 ## 🗄️ Estrutura do Banco de Dados Relacional
-O esquema do banco de dados abrange as seguintes entidades principais:
-* **`motorista`**: Controle de motoristas, números de CNH, categoria, EAR e status operacional.
-* **`veiculo`**: Cadastro da frota (tipo, modelo, capacidade de carga em kg e status).
-* **`cliente`**: Cadastro de empresas e pessoas físicas contratantes.
-* **`entrega`**: Relacionamento central de fretes, rotas por CEP, distâncias em km, valores e acompanhamento do status da entrega.
+O esquema conceitual e lógico abrange as seguintes entidades centrais:
+
+- **`motorista`**: Registra dados dos condutores, números de CNH, categoria, indicação de EAR e status operacional (ativo/inativo/em rota).
+- **`veiculo`**: Controle da frota (modelo, placa, tipo de veículo, capacidade de carga em kg e disponibilidade).
+- **`cliente`**: Cadastro unificado de contratantes (pessoas físicas e jurídicas).
+- **`entrega`**: Entidade central que relaciona cliente, veículo e motorista, armazenando rotas (origem/destino por CEP), distância (km), valores do frete e o histórico de status do transporte.
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
-* **SGBD**: PostgreSQL
-* **Extensões**: `pgcrypto` (para geração de identificadores únicos UUID)
-* **Linguagem**: SQL (DDL e DML)
+- **SGBD**: PostgreSQL (v14 ou superior)
+- **Extensões**: `pgcrypto` (para geração de identificadores únicos via UUID)
+- **Linguagem**: SQL (DDL para criação das estruturas e DML para manipulação/testes)
 
 ---
 
 ## 🚀 Como Executar o Script SQL
-1. Instale o **PostgreSQL** e abra a ferramenta de sua preferência (pgAdmin, DBeaver ou psql).
-2. Crie o banco de dados:
+
+### Pré-requisitos
+- **PostgreSQL** instalado na máquina local ou servidor.
+- Cliente SQL de sua preferência (**pgAdmin**, **DBeaver**, **psql**, etc.).
+
+### Passo a Passo
+1. Abra a ferramenta SQL e conecte-se ao seu servidor PostgreSQL.
+2. Crie o banco de dados do projeto:
    ```sql
    CREATE DATABASE pi_logistica;
