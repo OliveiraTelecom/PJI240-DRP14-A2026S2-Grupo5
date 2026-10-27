@@ -49,6 +49,7 @@ WHERE
 /* -------------------------------------------------------------------------
    3. Faturamento Total por Cliente (Análise Financeira)
    Explicação: Demonstra o uso de funções de agregação (COUNT e SUM) com GROUP BY. 
+   O uso do COALESCE garante que clientes sem entregas retornem 0 em vez de NULL.
    Isso comprova para o professor que o banco está preparado para gerar painéis 
    gerenciais (dashboards) financeiros e identificar os clientes mais rentáveis.
    ------------------------------------------------------------------------- */
@@ -57,7 +58,7 @@ SELECT
     c.nome_razao AS cliente,
     c.cpf_cnpj,
     COUNT(e.id) AS total_entregas,
-    SUM(e.valor_frete) AS faturamento_total
+    COALESCE(SUM(e.valor_frete), 0) AS faturamento_total
 FROM 
     cliente c
 LEFT JOIN entrega e ON c.id = e.cliente_id
@@ -70,12 +71,14 @@ ORDER BY
 
 /* -------------------------------------------------------------------------
    4. Resumo de Entregas por Status
+   Explicação: O uso de COALESCE no somatório da quilometragem protege o 
+   relatório contra valores em branco (NULL), mantendo a precisão dos dados.
    ------------------------------------------------------------------------- */
 -- Conta a quantidade de entregas agrupadas pela situação atual
 SELECT 
     status AS situacao_entrega,
     COUNT(*) AS quantidade_entregas,
-    SUM(distancia_km) AS km_total_percorrida
+    COALESCE(SUM(distancia_km), 0) AS km_total_percorrida
 FROM 
     entrega
 GROUP BY 
