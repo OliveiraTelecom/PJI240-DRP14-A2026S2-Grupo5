@@ -18,7 +18,7 @@ Este projeto apresenta a modelagem e a implementação de um banco de dados rela
 
 ## 📊 Origem e Coleta das Informações
 
-Para garantir a aderência do banco de dados às demandas reais do setor logístico, a levantamento de requisitos e a consolidação das informações basearam-se nas seguintes fontes:
+Para garantir a aderência do banco de dados às demandas reais do setor logístico, o levantamento de requisitos e a consolidação das informações basearam-se nas seguintes fontes:
 
 1. **Contextualização e Problema de Pesquisa:**
    - Observação das dificuldades operacionais enfrentadas por pequenas e médias empresas de transporte no rastreamento de entregas, alocação de frota e gestão do status de fretes.
