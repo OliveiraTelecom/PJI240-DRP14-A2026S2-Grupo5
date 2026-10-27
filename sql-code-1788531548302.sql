@@ -27,7 +27,7 @@ CREATE TABLE veiculo (
     capacidade_kg DECIMAL(10,2) NOT NULL CHECK (capacidade_kg >= 0),
     status VARCHAR(20) NOT NULL CHECK (status IN ('operacional', 'manutencao', 'baixado'))
 );
-Explicação: Controla os recursos físicos. As constraints CHECK garantem integridade dos dados (não permitindo anos de fabricação impossíveis ou capacidades de carga negativas).
+Explicação: Controla os recursos físicos. As constraints CHECK garantem a integridade dos dados (não permitindo anos de fabricação impossíveis ou capacidades de carga negativas).
 
 4. Cadastro de Clientes
 SQL
@@ -67,7 +67,7 @@ SQL
 CREATE INDEX idx_entrega_status ON entrega(status);
 CREATE INDEX idx_entrega_data_saida ON entrega(data_saida);
 CREATE INDEX idx_veiculo_status ON veiculo(status);
-Explicação: Cria "guias de busca rápida" no banco. Como relatórios frequentemente filtram entregas pela data ou status (ex: "buscar todas as entregas em_transito hoje"), os índices impedem que o banco precise ler a tabela inteira linha por linha.
+Explicação: Cria "guias de busca rápida" no banco. Como relatórios frequentemente filtram entregas pela data ou status (ex: "buscar todas as entregas em trânsito hoje"), os índices impedem que o banco precise ler a tabela inteira, linha por linha.
 
 7. População de Dados (Carga Inicial)
 SQL
