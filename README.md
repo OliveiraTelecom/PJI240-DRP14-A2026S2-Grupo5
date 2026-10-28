@@ -1,45 +1,74 @@
-# UNIVESP - Projeto Integrador PJI240 (A2026S2 / Turma 008 - Polo DRP14)
+UNIVESP - Projeto Integrador PJI240 (A2026S2 / Turma 008 - Polo DRP14)
 
-**Grupo 5**
+Grupo 5
 
-## 📌 Nome do Projeto
+📌 Nome do Projeto
+
 Sistema de Gerenciamento e Rastreamento Logístico Integrado
 
-## 👨‍🎓 Integrantes do Grupo
-* **João Vitor da Silva Oliveira** — RA: 24207633
+👨‍🎓 Integrantes do Grupo
 
-## 📖 Descrição do Projeto
-Este projeto apresenta a modelagem e a implementação de um banco de dados relacional para a otimização e o controle de processos logísticos de transporte. A solução centralizada em PostgreSQL visa substituir planilhas e controles manuais por um modelo estruturado, seguro e escalável, garantindo a integridade relacional entre motoristas, frotas, clientes e ordens de entrega em tempo real.
+João Vitor da Silva Oliveira — RA: 24207633
 
-## 📊 Origem e Coleta das Informações
+📖 Descrição do Projeto
+
+Este projeto apresenta a modelagem e a implementação de um banco de dados relacional para a otimização e o controle de processos logísticos de transporte. A solução, centralizada em PostgreSQL, visa substituir planilhas e controles manuais por um modelo estruturado, seguro e escalável, garantindo a integridade relacional entre motoristas, frotas, clientes e ordens de entrega em tempo real.
+
+📊 Origem e Coleta das Informações
+
 Para garantir a aderência do banco de dados às demandas reais do setor logístico, o levantamento de requisitos e a consolidação das informações basearam-se nas seguintes fontes:
 
-* **Contextualização e Problema de Pesquisa:** Observação das dificuldades operacionais enfrentadas por pequenas e médias empresas de transporte no rastreamento de entregas, alocação de frota e gestão do status de fretes.
-* **Mapeamento de Processos e Entrevistas (Pesquisa Qualitativa):** Mapeamento das rotinas logísticas essenciais (fluxo desde a contratação do cliente até a confirmação da entrega), obtido por meio de entrevistas com profissionais da área de logística e transporte de carga.
-* **Normas e Legislações Setoriais:** Levantamento dos atributos obrigatórios para cadastro de condutores e frotas de acordo com as exigências do Contran/Senatran (ex.: Categoria da CNH, EAR - Exercício de Atividade Remunerada, capacidade de carga em kg).
-* **Dados para Testes e Simulação:** Os dados utilizados nos scripts DML para povoamento inicial e validação de consultas são dados sintéticos (fictícios) e/ou públicos (como validação de formatos de CEP), gerados exclusivamente para fins acadêmicos e demonstrativos, respeitando rigorosamente as diretrizes da LGPD.
+Contextualização e Problema de Pesquisa: Observação das dificuldades operacionais enfrentadas por pequenas e médias empresas de transporte no rastreamento de entregas, alocação de frota e gestão do status de fretes.
 
-## 🗄️ Estrutura do Banco de Dados Relacional
+Mapeamento de Processos e Entrevistas (Pesquisa Qualitativa): Mapeamento das rotinas logísticas essenciais (fluxo desde a contratação do cliente até a confirmação da entrega), obtido por meio de entrevistas com profissionais da área de logística e transporte de carga.
+
+Normas e Legislações Setoriais: Levantamento dos atributos obrigatórios para cadastro de condutores e frotas, de acordo com as exigências do Contran/Senatran (ex.: Categoria da CNH, EAR - Exercício de Atividade Remunerada, capacidade de carga em kg).
+
+Dados para Testes e Simulação: Os dados utilizados nos scripts DML para povoamento inicial e validação de consultas são dados sintéticos (fictícios) e/ou públicos (como validação de formatos de CEP). Eles foram gerados exclusivamente para fins acadêmicos e demonstrativos, respeitando rigorosamente as diretrizes da LGPD.
+
+🗄️ Estrutura do Banco de Dados Relacional
+
 O esquema conceitual e lógico abrange as seguintes entidades centrais:
 
-* **`motorista`:** Registra dados dos condutores, números de CNH, categoria, indicação de EAR e status operacional (ativo, inativo, em rota).
-* **`veiculo`:** Controle da frota, incluindo modelo, placa, tipo de veículo, capacidade de carga em kg e status de disponibilidade.
-* **`cliente`:** Cadastro unificado de contratantes (pessoas físicas e jurídicas).
-* **`entrega`:** Entidade central que relaciona cliente, veículo e motorista, armazenando rotas (origem e destino por CEP), distância (km), valores do frete e o histórico do status do transporte.
+motorista: Registra os dados dos condutores, números de CNH, categoria, indicação de EAR e status operacional (disponível/inativo/em viagem).
 
-## 🛠️ Tecnologias Utilizadas
-* **SGBD:** PostgreSQL (v14 ou superior)
-* **Extensões:** `pgcrypto` (para geração de identificadores únicos via UUID)
-* **Linguagem:** SQL (DDL para criação das estruturas e DML para manipulação e testes)
+veiculo: Realiza o controle da frota (modelo, placa, tipo de veículo, capacidade de carga em kg e disponibilidade).
 
-## 🚀 Como Executar o Script SQL
+cliente: Mantém o cadastro unificado de contratantes (pessoas físicas e jurídicas).
 
-### Pré-requisitos
-1. PostgreSQL instalado na máquina local ou no servidor.
-2. Cliente SQL de sua preferência (pgAdmin, DBeaver, psql, etc.).
+entrega: Entidade transacional central que relaciona cliente, veículo e motorista, armazenando rotas (origem e destino por CEP), distâncias (km), valores do frete e o histórico de status do transporte.
 
-### Passo a Passo
-1. Abra a ferramenta SQL e conecte-se ao seu servidor PostgreSQL.
-2. Crie o banco de dados do projeto executando o seguinte comando:
-   ```sql
-   CREATE DATABASE pi_logistica;
+🛠️ Tecnologias Utilizadas
+
+SGBD: PostgreSQL (v14 ou superior)
+
+Extensões: pgcrypto (para geração de identificadores únicos via UUID)
+
+Linguagem: SQL (DDL para criação das estruturas e DML para manipulação/testes)
+
+🚀 Como Executar o Script SQL
+
+Pré-requisitos
+
+PostgreSQL instalado na máquina local ou em servidor.
+
+Cliente SQL de sua preferência (pgAdmin, DBeaver, psql, etc.).
+
+Passo a Passo
+
+Abra a ferramenta SQL e conecte-se ao seu servidor PostgreSQL.
+
+Crie o banco de dados do projeto executando o comando:
+
+CREATE DATABASE pi_logistica;
+
+
+Conecte-se ao banco de dados recém-criado (pi_logistica).
+
+Se estiver usando o terminal psql, utilize o comando \c pi_logistica.
+
+Se estiver usando pgAdmin ou DBeaver, selecione o banco de dados na árvore de navegação à esquerda.
+
+Abra os arquivos .sql fornecidos (contendo os scripts DDL, DML e consultas) na sua ferramenta.
+
+Execute os scripts na ordem apropriada para criar as tabelas estruturais, inserir os dados sintéticos e validar as consultas.
