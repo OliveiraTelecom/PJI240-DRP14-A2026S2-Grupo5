@@ -45,5 +45,6 @@ O link da aplicação não substitui o link do vídeo no YouTube. Verifique que 
 - Fluxo web observado no navegador: recusa de carga excessiva, criação, início, conclusão, liberação de recursos, persistência após recarga e relatório.
 - Cenário fictício: duas entregas de R$ 250 e R$ 350; total de fretes R$ 600.
 - Testes de integridade SQLite: alocação duplicada, valores negativos, referência inválida e reutilização de recursos após conclusão.
-- Testes Flask locais: 10 passaram e 4 de integração foram ignorados por ausência de TEST_DATABASE_URL. A execução PostgreSQL real deve ser confirmada pelo workflow desta revisão.
+- Testes Flask locais: 10 passaram e 4 de integração foram ignorados por ausência de TEST_DATABASE_URL. A execução com PostgreSQL real confirmou 14 testes aprovados em 0,86 s; Compose e seis rotas HTTP também passaram no workflow 42277597039.
+- Evidência: https://github.com/OliveiraTelecom/PJI240-DRP14-A2026S2-Grupo5/actions/runs/42277597039 (commit 448a08b17fa8cfaf00d6e95b20353c4371ae9390).
 - Não houve postagem no AVA, aprovação pela instituição ou publicação no YouTube nesta etapa.
