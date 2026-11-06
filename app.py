@@ -5,7 +5,7 @@ from functools import wraps
 from flask import Flask, flash, redirect, render_template, request, url_for, abort
 import psycopg
 from psycopg.rows import dict_row
-from psycopg.errors import IntegrityError
+from psycopg.errors import IntegrityError, DataError
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "development-only-change-me")
@@ -40,7 +40,7 @@ def safe_write(sql, params, target):
     try:
         write(sql, params)
         flash("Operação realizada com sucesso.", "success")
-    except (IntegrityError, ValueError, InvalidOperation) as exc:
+    except (IntegrityError, DataError, ValueError, InvalidOperation):
         flash("Não foi possível salvar: verifique campos obrigatórios, valores e duplicidades.", "danger")
     return redirect(target)
 
@@ -118,3 +118,4 @@ def health():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")), debug=False)
+

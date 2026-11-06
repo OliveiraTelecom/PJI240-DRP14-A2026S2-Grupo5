@@ -5,6 +5,20 @@ on:
 jobs:
   testes:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: pi_logistica_test
+          POSTGRES_USER: logistica
+          POSTGRES_PASSWORD: teste-ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U logistica -d pi_logistica_test"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgresql://logistica:teste-ci@localhost:5432/pi_logistica_test
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -13,3 +27,4 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt
       - run: python -m pytest -q
+
