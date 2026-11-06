@@ -1,0 +1,394 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "0b917202-3733-4702-a1f2-ba6e0f9d73d9",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "cliente": {
+      "name": "cliente",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nome_razao": {
+          "name": "nome_razao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cpf_cnpj": {
+          "name": "cpf_cnpj",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "telefone": {
+          "name": "telefone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "endereco_base": {
+          "name": "endereco_base",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "cliente_cpf_cnpj_unique": {
+          "name": "cliente_cpf_cnpj_unique",
+          "columns": [
+            "cpf_cnpj"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "entrega": {
+      "name": "entrega",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cliente_id": {
+          "name": "cliente_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "motorista_id": {
+          "name": "motorista_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "veiculo_id": {
+          "name": "veiculo_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cep_origem": {
+          "name": "cep_origem",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cep_destino": {
+          "name": "cep_destino",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "distancia_km": {
+          "name": "distancia_km",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "valor_frete": {
+          "name": "valor_frete",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "carga_kg": {
+          "name": "carga_kg",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pendente'"
+        },
+        "data_saida": {
+          "name": "data_saida",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "data_chegada": {
+          "name": "data_chegada",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "motorista_ativo": {
+          "name": "motorista_ativo",
+          "columns": [
+            "motorista_id"
+          ],
+          "isUnique": true,
+          "where": "\"entrega\".\"status\" in ('pendente','em_transito')"
+        },
+        "veiculo_ativo": {
+          "name": "veiculo_ativo",
+          "columns": [
+            "veiculo_id"
+          ],
+          "isUnique": true,
+          "where": "\"entrega\".\"status\" in ('pendente','em_transito')"
+        },
+        "entrega_status_idx": {
+          "name": "entrega_status_idx",
+          "columns": [
+            "status"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "entrega_cliente_id_cliente_id_fk": {
+          "name": "entrega_cliente_id_cliente_id_fk",
+          "tableFrom": "entrega",
+          "tableTo": "cliente",
+          "columnsFrom": [
+            "cliente_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "entrega_motorista_id_motorista_id_fk": {
+          "name": "entrega_motorista_id_motorista_id_fk",
+          "tableFrom": "entrega",
+          "tableTo": "motorista",
+          "columnsFrom": [
+            "motorista_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "entrega_veiculo_id_veiculo_id_fk": {
+          "name": "entrega_veiculo_id_veiculo_id_fk",
+          "tableFrom": "entrega",
+          "tableTo": "veiculo",
+          "columnsFrom": [
+            "veiculo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "entrega_valores": {
+          "name": "entrega_valores",
+          "value": "\"entrega\".\"distancia_km\" >= 0 and \"entrega\".\"valor_frete\" >= 0 and \"entrega\".\"carga_kg\" >= 0"
+        },
+        "entrega_status": {
+          "name": "entrega_status",
+          "value": "\"entrega\".\"status\" in ('pendente','em_transito','concluida','cancelada')"
+        }
+      }
+    },
+    "motorista": {
+      "name": "motorista",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nome_completo": {
+          "name": "nome_completo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cnh_numero": {
+          "name": "cnh_numero",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "categoria_cnh": {
+          "name": "categoria_cnh",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "possui_ear": {
+          "name": "possui_ear",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'disponivel'"
+        }
+      },
+      "indexes": {
+        "motorista_cnh_numero_unique": {
+          "name": "motorista_cnh_numero_unique",
+          "columns": [
+            "cnh_numero"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "motorista_status": {
+          "name": "motorista_status",
+          "value": "\"motorista\".\"status\" in ('disponivel','ferias','inativo')"
+        }
+      }
+    },
+    "veiculo": {
+      "name": "veiculo",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "placa": {
+          "name": "placa",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "marca_modelo": {
+          "name": "marca_modelo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ano_fabricacao": {
+          "name": "ano_fabricacao",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "capacidade_kg": {
+          "name": "capacidade_kg",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'operacional'"
+        }
+      },
+      "indexes": {
+        "veiculo_placa_unique": {
+          "name": "veiculo_placa_unique",
+          "columns": [
+            "placa"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "veiculo_capacidade": {
+          "name": "veiculo_capacidade",
+          "value": "\"veiculo\".\"capacidade_kg\" >= 0"
+        },
+        "veiculo_ano": {
+          "name": "veiculo_ano",
+          "value": "\"veiculo\".\"ano_fabricacao\" > 1900"
+        },
+        "veiculo_status": {
+          "name": "veiculo_status",
+          "value": "\"veiculo\".\"status\" in ('operacional','manutencao','baixado')"
+        }
+      }
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

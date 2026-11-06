@@ -2,13 +2,34 @@
 import os
 from decimal import Decimal, InvalidOperation
 from functools import wraps
-from flask import Flask, flash, redirect, render_template, request, url_for, abort
+from flask import Flask, flash, redirect, render_template, request, url_for, abort, session
+import secrets
+import hmac
+import re
 import psycopg
 from psycopg.rows import dict_row
 from psycopg.errors import IntegrityError, DataError
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "development-only-change-me")
+app.config['MAX_CONTENT_LENGTH'] = 64 * 1024
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['CSRF_ENABLED'] = True
+
+@app.context_processor
+def csrf_context():
+    token = session.setdefault('_csrf_token', secrets.token_urlsafe(32))
+    return {'csrf_token': token}
+
+@app.before_request
+def check_csrf():
+    if request.method == 'POST' and app.config.get('CSRF_ENABLED', True):
+        supplied = request.form.get('_csrf_token', '')
+        expected = session.get('_csrf_token', '')
+        if not supplied or not expected or not hmac.compare_digest(supplied, expected):
+            abort(400, description='Formulário expirado. Recarregue a página e tente novamente.')
+
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://logistica:logistica@localhost:5432/pi_logistica")
 
 TABLES = {
@@ -86,6 +107,20 @@ def entregas():
         if any(not vals[i] for i in (0, 1, 2, 3, 4, 6)):
             flash("Preencha os campos obrigatórios da entrega.", "danger")
             return redirect(url_for("entregas"))
+        try:
+            for i in (3, 4):
+                digits = re.sub(r'\D', '', vals[i] or '')
+                if len(digits) != 8:
+                    raise ValueError('CEP inválido')
+                vals[i] = digits[:5] + '-' + digits[5:]
+            for i in (5, 6):
+                if vals[i] is not None:
+                    value = Decimal(vals[i])
+                    if not value.is_finite() or value < 0:
+                        raise ValueError('Valor inválido')
+        except (ValueError, InvalidOperation):
+            flash("Informe CEPs com oito dígitos e valores não negativos.", "danger")
+            return redirect(url_for("entregas"))
         return safe_write("INSERT INTO entrega (cliente_id,motorista_id,veiculo_id,cep_origem,cep_destino,distancia_km,valor_frete,status) VALUES (%s,%s,%s,%s,%s,%s,%s,'pendente')", vals, url_for("entregas"))
     rows = query("SELECT e.*, c.nome_razao AS cliente, m.nome_completo AS motorista, v.placa FROM entrega e JOIN cliente c ON c.id=e.cliente_id JOIN motorista m ON m.id=e.motorista_id JOIN veiculo v ON v.id=e.veiculo_id ORDER BY e.data_saida DESC NULLS LAST, e.id DESC")
     return render_template("entregas.html", rows=rows, clientes=query("SELECT id,nome_razao AS label FROM cliente ORDER BY nome_razao"), motoristas=query("SELECT id,nome_completo AS label FROM motorista WHERE status <> 'inativo' ORDER BY nome_completo"), veiculos=query("SELECT id,placa AS label FROM veiculo WHERE status='operacional' ORDER BY placa"), statuses=STATUSES)
@@ -102,7 +137,7 @@ def update_status(item_id):
 
 @app.get("/relatorios")
 def relatorios():
-    billing = query("SELECT c.nome_razao, COUNT(e.id) AS total, COALESCE(SUM(e.valor_frete),0) AS faturamento FROM cliente c LEFT JOIN entrega e ON e.cliente_id=c.id GROUP BY c.id ORDER BY faturamento DESC")
+    billing = query("SELECT c.nome_razao, COUNT(e.id) AS total, COALESCE(SUM(CASE WHEN e.status <> 'cancelada' THEN e.valor_frete ELSE 0 END),0) AS faturamento FROM cliente c LEFT JOIN entrega e ON e.cliente_id=c.id GROUP BY c.id ORDER BY faturamento DESC")
     status = query("SELECT status, COUNT(*) AS total, COALESCE(SUM(distancia_km),0) AS km FROM entrega GROUP BY status ORDER BY status")
     return render_template("relatorios.html", billing=billing, status=status)
 

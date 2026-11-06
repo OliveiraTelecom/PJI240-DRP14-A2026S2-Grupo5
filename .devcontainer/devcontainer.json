@@ -4,23 +4,10 @@
   "service": "web",
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
-  "forwardPorts": [
-    5000
-  ],
-  "portsAttributes": {
-    "5000": {
-      "label": "Sistema de Logística Integrada",
-      "onAutoForward": "openBrowser",
-      "visibility": "private"
-    }
-  },
+  "forwardPorts": [5000],
+  "portsAttributes": {"5000": {"label": "Sistema de Logística Integrada", "onAutoForward": "openBrowser", "visibility": "private"}},
   "postCreateCommand": "python -m pytest -q",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "ms-python.python"
-      ]
-    }
-  },
+  "postStartCommand": "python scripts/verify_startup.py",
+  "customizations": {"vscode": {"extensions": ["ms-python.python"]}},
   "overrideCommand": false
 }
