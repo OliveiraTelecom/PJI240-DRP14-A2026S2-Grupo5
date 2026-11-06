@@ -9,6 +9,20 @@
 - Configuração do Codespaces preserva o comando de inicialização automática (`overrideCommand: false`).
 - A execução acima ocorreu no GitHub Actions; o link privado e a apresentação visual no Codespace real continuam pendentes.
 
+## Validação da aplicação em execução
+
+GitHub Actions [42258581344](https://github.com/OliveiraTelecom/PJI240-DRP14-A2026S2-Grupo5/actions/runs/42258581344) — **aprovado**, código `32a78bffebb4e22cbf5b9f8595021e8f53080959`.
+
+- [x] 11 testes aprovados com PostgreSQL 16 real
+- [x] Build e inicialização do Docker Compose
+- [x] Contêineres web e db saudáveis
+- [x] /health confirma banco conectado por HTTP
+- [x] Dashboard, clientes, motoristas, veículos, entregas e relatórios respondem HTTP 200
+- [ ] Abertura do link privado da porta 5000 no Codespace do usuário
+- [ ] Inspeção visual e apresentação manual no navegador
+
+Os testes de integração usam esquemas temporários e verificam as operações pelo cliente de testes Flask com banco real; a verificação HTTP adicional abre as seis páginas no servidor iniciado pelo Compose. Não houve acesso ao banco ou ao volume do Codespace do usuário. Este resultado permite seguir para a demonstração privada, mas não certifica hospedagem pública ou disponibilidade permanente.
+
 ## Inicializar no Codespaces
 
 1. Crie o Codespace na `main`. Se ele já existe, execute `git pull` e selecione **Codespaces: Rebuild Container** na paleta de comandos.
