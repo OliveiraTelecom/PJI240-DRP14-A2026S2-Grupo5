@@ -85,7 +85,7 @@ preservados, com o arquivo de criação em `sql/01_criacao_e_insercao.sql`.
 
 1. No repositório do GitHub, clique em **Code → Codespaces → Create codespace on main**.
 2. Aguarde a criação do contêiner e a instalação das dependências.
-3. No terminal do Codespaces, execute `python app.py`.
+3. O servidor inicia automaticamente; não execute uma segunda instância de `python app.py`.
 4. Abra a porta **5000** na aba **Ports** (ou aceite a abertura automática).
 5. Verifique `/health`: deve responder `{"status":"ok","database":"connected"}`.
 
@@ -98,8 +98,7 @@ os dados do banco**. No Codespaces, a porta 5000 deve permanecer **Private**.
 
 ```bash
 docker compose up -d --build
-# Inicie o servidor Flask dentro do contêiner:
-docker compose exec web python app.py
+# O servidor Flask já inicia automaticamente no serviço web.
 ```
 
 Abra http://localhost:5000. Para executar os testes:
@@ -117,3 +116,4 @@ python -m pytest -q
   utilizados em produção sem autenticação, CSRF, validações e segurança adicionais.
 - A exclusão de clientes, veículos e motoristas associados a entregas é bloqueada
   pelas chaves estrangeiras, conforme o esquema original.
+

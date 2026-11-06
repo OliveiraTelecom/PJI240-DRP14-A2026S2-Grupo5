@@ -2,30 +2,31 @@
 
 ## Estado verificado em 06/11/2026
 
-- Código Flask + PostgreSQL + Docker Compose disponível na branch `fix/apresentacao-codespaces-2026`.
-- GitHub Actions (execução 42239165554): testes de Python **aprovados** na branch de correções.
-- Os testes existentes usam mocks e **não confirmam** PostgreSQL real, criação de entrega ou persistência de status.
-- É necessário fazer o merge das correções em `main` antes de criar um Codespace a partir da branch principal.
-- **Não divulgar o Codespaces publicamente**: não há autenticação de usuários nem proteção CSRF.
-- Rastreamento significa acompanhamento manual do status, não localização GPS.
-- Carga SQL executa somente na primeira criação do volume Docker; não apagar volumes com dados sem backup.
+- Correções integradas na branch `main`.
+- GitHub Actions [42258367762](https://github.com/OliveiraTelecom/PJI240-DRP14-A2026S2-Grupo5/actions/runs/42258367762): **11 testes aprovados**, incluindo PostgreSQL 16 real.
+- Validados: carga SQL original; abertura das seis páginas; saúde do banco; criação de cliente, motorista, veículo e entrega; persistência de status e datas; relatórios; duplicidade e bloqueio de exclusões vinculadas.
+- Corrigido o tratamento de dados com formato/tamanho inválido, evitando erro 500.
+- Configuração do Codespaces preserva o comando de inicialização automática (`overrideCommand: false`).
+- A execução acima ocorreu no GitHub Actions; o link privado e a apresentação visual no Codespace real continuam pendentes.
 
-## Inicializar versão corrigida no Codespaces
+## Inicializar no Codespaces
 
-1. Abra o pull request de correções e selecione a branch revisada.
-2. Crie um Codespace com a branch revisada. O Compose inicia `web` e `db`.
-3. Na aba **Ports**, mantenha a porta `5000` como **Private**.
-4. No terminal integrado, execute:
+1. Crie o Codespace na `main`. Se ele já existe, execute `git pull` e selecione **Codespaces: Rebuild Container** na paleta de comandos.
+2. Aguarde PostgreSQL e servidor web iniciarem automaticamente; não abra uma segunda instância com `python app.py`.
+3. Na aba **Ports**, abra a porta `5000` e mantenha-a **Private**.
+4. Dentro do terminal do contêiner web, execute:
 
 ```sh
-docker compose ps
-docker compose logs --tail=100 web
-docker compose logs --tail=100 db
 python -m pytest -q
-curl -fsS http://localhost:5000/health
+TEST_DATABASE_URL="$DATABASE_URL" python -m pytest tests/test_integration.py -q
+python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:5000/health', timeout=5).read().decode())"
 ```
 
-5. Espere `{"status":"ok","database":"connected"}` em `/health`. O serviço web e o banco devem estar saudáveis.
+O segundo comando usa esquemas temporários `aceitacao_`, criados e removidos pelo teste. Não apaga cadastros existentes. O usuário PostgreSQL precisa de permissão para criar esquemas, como ocorre no Compose do projeto.
+
+Resposta esperada em `/health`: `{"status":"ok","database":"connected"}`.
+
+Para diagnóstico do Compose, execute `docker compose ps` e `docker compose logs --tail=100 web db` em um terminal com acesso ao Docker. O contêiner web não inclui Docker CLI.
 
 ## Roteiro prático da apresentação
 
@@ -49,6 +50,7 @@ Aceitar somente após todos os itens acima funcionarem no **Codespaces real**. T
 
 ## Notas de compatibilidade
 
-- Uso de `Docker Compose` no Codespaces requer que o projeto seja criado a partir da branch que contém `.devcontainer/devcontainer.json`.
+- Use a branch `main`, que já contém `.devcontainer/devcontainer.json`.
 - A documentação antiga do `README.md` sugere `python app.py` ou `docker compose exec web python app.py`; com a nova configuração o serviço `web` **já inicializa automaticamente**, portanto não é necessário executar uma segunda instância.
 - Havendo falha de conexão ou problema no esquema, registre logs e faça backup do volume antes de qualquer reconstrução destrutiva.
+

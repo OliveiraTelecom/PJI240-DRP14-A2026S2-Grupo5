@@ -27,4 +27,24 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt
       - run: python -m pytest -q
+      - name: Iniciar aplicação completa com Docker Compose
+        run: docker compose up -d --build --wait --wait-timeout 120
+      - name: Validar HTTP e banco na aplicação em execução
+        run: |
+          python - <<'PY'
+          import json
+          from urllib.request import urlopen
+          base = "http://127.0.0.1:5000"
+          with urlopen(base + "/health", timeout=10) as response:
+              assert json.load(response) == {"status": "ok", "database": "connected"}
+          for path in ("/", "/clientes", "/motoristas", "/veiculos", "/entregas", "/relatorios"):
+              with urlopen(base + path, timeout=10) as response:
+                  assert response.status == 200
+                  assert b"<!doctype html>" in response.read().lower()
+              print(f"OK {path}")
+          print("HTTP e PostgreSQL conectados: OK")
+          PY
+      - name: Logs de diagnóstico em caso de falha
+        if: failure()
+        run: docker compose logs --tail=100 web db
 
