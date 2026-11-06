@@ -72,3 +72,48 @@ Se estiver usando pgAdmin ou DBeaver, selecione o banco de dados na árvore de n
 Abra os arquivos .sql fornecidos (contendo os scripts DDL, DML e consultas) na sua ferramenta.
 
 Execute os scripts na ordem apropriada para criar as tabelas estruturais, inserir os dados sintéticos e validar as consultas.
+
+---
+
+## Interface web (Flask) e GitHub Codespaces
+
+O projeto agora inclui uma interface web acadêmica para dashboard, cadastro de clientes,
+motoristas e veículos, gestão de entregas e relatórios. Os scripts SQL originais foram
+preservados, com o arquivo de criação em `sql/01_criacao_e_insercao.sql`.
+
+### Iniciar no Codespaces
+
+1. No repositório do GitHub, clique em **Code → Codespaces → Create codespace on main**.
+2. Aguarde a criação do contêiner e a instalação das dependências.
+3. No terminal do Codespaces, execute `python app.py`.
+4. Abra a porta **5000** na aba **Ports** (ou aceite a abertura automática).
+5. Verifique `/health`: deve responder `{"status":"ok","database":"connected"}`.
+
+O Docker Compose inicia o PostgreSQL 16, cria o banco `pi_logistica` e executa o
+script SQL **somente na primeira inicialização do volume**. Para reinicializar
+com os dados fictícios, use `docker compose down -v` com cuidado: **isso apaga
+os dados do banco**. No Codespaces, a porta 5000 deve permanecer **Private**.
+
+### Executar localmente com Docker
+
+```bash
+docker compose up -d --build
+# Inicie o servidor Flask dentro do contêiner:
+docker compose exec web python app.py
+```
+
+Abra http://localhost:5000. Para executar os testes:
+
+```bash
+python -m pytest -q
+```
+
+### Limitações da versão acadêmica
+
+- O rastreamento é por **status da entrega**, não por GPS em tempo real.
+- Não há autenticação de usuários nem controle de permissões. **Não publique a
+  porta como pública** e não utilize dados reais ou senhas de produção.
+- Os dados de demonstração são fictícios. O banco e a aplicação não devem ser
+  utilizados em produção sem autenticação, CSRF, validações e segurança adicionais.
+- A exclusão de clientes, veículos e motoristas associados a entregas é bloqueada
+  pelas chaves estrangeiras, conforme o esquema original.
