@@ -34,6 +34,11 @@ O SQL inicial roda apenas na primeira criação do volume. Preserve o volume exi
 
 ## Versão hospedada e apresentação
 
+### Vídeo de apresentação do projeto
+
+[Assistir ao vídeo de apresentação no YouTube](https://youtu.be/Ku6Y4PFKAaM)
+
+
 O link verificado da implantação e as instruções estão em [`docs/ENTREGA_E_DEMONSTRACAO.md`](docs/ENTREGA_E_DEMONSTRACAO.md).
 A rota `/apresentacao` contém slides navegáveis, notas de fala, roteiro sugerido de 7min10s, impressão em PDF e botões que abrem o sistema real.
 
