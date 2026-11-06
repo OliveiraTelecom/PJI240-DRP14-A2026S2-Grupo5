@@ -19,8 +19,8 @@ def test_entregas_e_relatorios():
 
 def test_registro_obrigatorio():
     with patch.object(webapp, "write") as write:
-        response = webapp.app.test_client().post("/clientes", data={}, follow_redirects=True)
-    assert response.status_code == 200
+        response = webapp.app.test_client().post("/clientes", data={})
+    assert response.status_code == 302
     write.assert_not_called()
 
 
